@@ -9,6 +9,6 @@ const TaskSchma = new Schema({
     when: { type: Date, required: true },
     done: { type: Boolean, default: false },
     created: { type: Date, default: Date.now() }
-})
+});
 
 module.exports = mongoose.model('Task', TaskSchma);
