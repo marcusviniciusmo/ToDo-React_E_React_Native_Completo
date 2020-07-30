@@ -81,6 +81,14 @@ function Task({match}) {
     }
   }
 
+  async function Remove(){
+    const res = window.confirm('Deseja realmente remover a tarefa?')
+    if(res){
+      await api.delete(`/task/${match.params.id}`)
+        .then(() => setRedirect(true));
+    }
+  }
+
   useEffect(() => {
     lateVerify();
     LoadTaskDetails();
@@ -134,7 +142,7 @@ function Task({match}) {
               onChange={() => setDone(!done)} />
               <span>CONCLUÍDO</span>
             </div>
-            <button type="button">EXCLUIR</button>
+          {match.params.id && <button type="button" onClick={Remove}>EXCLUIR</button> }
           </S.Options>
 
           <S.Save>
