@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Redirect } from 'react-router-dom';
 import * as S from './styles';
 import { format } from 'date-fns';
 
@@ -13,6 +14,7 @@ import iconCalendar from '../../assets_web/calendar.png';
 import iconClock from '../../assets_web/clock.png';
 
 function Task({match}) {
+    const [redirect, setRedirect] = useState(false);
     const [lateCount, setLateCount] = useState();
     const [type, setType] = useState();
     const [id, setId] = useState();
@@ -42,15 +44,28 @@ function Task({match}) {
   }
 
   async function Save(){
-    await api.post('/task', {
-      macaddress,
-      type,
-      title,
-      description,
-      when: `${date}T${hour}:00.000`
-    }).then(() =>
-      alert('TAREFA CADASTRADA COM SUCESSO!')
-    )
+    if(match.params.id){
+      await api.put(`/task/${match.params.id}`, {
+        macaddress,
+        done,
+        type,
+        title,
+        description,
+        when: `${date}T${hour}:00.000`
+      }).then(() =>
+        setRedirect(true)
+      )
+    }else{
+      await api.post('/task', {
+        macaddress,
+        type,
+        title,
+        description,
+        when: `${date}T${hour}:00.000`
+      }).then(() =>
+        setRedirect(true)
+      )
+    }
   }
 
   useEffect(() => {
@@ -60,6 +75,7 @@ function Task({match}) {
 
   return (
     <S.Container>
+      { redirect && <Redirect to="/"/>}
       <Header lateCount={lateCount}/>
 
       <S.Form>
