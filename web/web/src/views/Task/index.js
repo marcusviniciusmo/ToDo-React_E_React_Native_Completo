@@ -36,6 +36,7 @@ function Task({match}) {
     await api.get(`/task/${match.params.id}`)
       .then(response => {
         setType(response.data.type)
+        setDone(response.data.done)
         setTitle(response.data.title)
         setDescription(response.data.description)
         setDate(format(new Date(response.data.when), 'yyyy-MM-dd'))
@@ -44,6 +45,18 @@ function Task({match}) {
   }
 
   async function Save(){
+    // Validação dos dados
+    if (!type)
+      return alert("Você precisa selecionar o tipo da tarefa.")
+    else if (!title)
+      return alert("Você precisa informar o título da tarefa.")  
+    else if (!description)
+      return alert("Você precisa informa a descrição da tarefa.")
+    else if (!date)
+      return alert("Você precisa definir a data da tarefa.")
+    else if(!hour)
+      return alert("Você precisa definir a hora da tarefa.")
+
     if(match.params.id){
       await api.put(`/task/${match.params.id}`, {
         macaddress,
