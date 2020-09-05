@@ -10,7 +10,7 @@ import TaskCard from '../../components/TaskCard';
 // API
 import api from '../../services/api';
 
-export default function Home() {
+export default function Home({ navigation }) {
     const [filter, setFilter] = useState('today');
     const [tasks, setTasks] = useState([]);
     const [load, setLoad] = useState(false);
@@ -36,6 +36,10 @@ export default function Home() {
         setFilter('late');
     }
 
+    function New(){
+        navigation.navigate('Task');
+    }
+
     useEffect(() => {
         loadTasks();
         lateVerify();
@@ -43,7 +47,7 @@ export default function Home() {
 
     return (
         <View style={styles.container}>
-            <Header showNotification={true} showBack={true} pressNotification={Notification} late={lateCount}/>
+            <Header showNotification={true} showBack={false} pressNotification={Notification} late={lateCount}/>
             <View style={styles.filter}>
                 <TouchableOpacity onPress={() => setFilter('all')}>
                     <Text style={filter == 'all' ? styles.filterTextActived : styles.filterTextInative}>Todos</Text>
@@ -80,7 +84,7 @@ export default function Home() {
                     }
             </ScrollView>
 
-            <Footer icon={'add'}/>
+            <Footer icon={'add'} onPress={New}/>
         </View>
     )
 }
