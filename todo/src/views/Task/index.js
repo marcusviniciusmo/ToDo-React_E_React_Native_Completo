@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     ScrollView,
@@ -10,6 +10,7 @@ import {
     Switch,
     Alert
 } from 'react-native';
+import * as Network from 'expo-network';
 
 import styles from './styles';
 import api from '../../services/api';
@@ -20,7 +21,8 @@ import Footer from '../../components/Footer';
 import typeIcons from '../../utils/typeIcons';
 import DateTimeInput from '../../components/DateTimeInput';
 
-export default function Task({ navigation }) {
+export default function Task({ navigation, idTask }) {
+    const [id, setId] = useState();
     const [done, setDone] = useState(false);
     const [type, setType] = useState();
     const [title, setTitle] = useState();
@@ -55,6 +57,19 @@ export default function Task({ navigation }) {
             navigation.navigate('Home');
         })
     }
+
+    async function getMacAddress(){
+        await Network.getMacAddressAsync().then(mac => {
+            setMacaddress(mac);
+        }); 
+    }
+
+    useEffect(() => {
+        if(navigation.state.params)
+            setId(navigation.state.params.idTask)
+        
+        getMacAddress();
+    });
 
     return (
         <KeyboardAvoidingView behavior='padding' style={styles.container}>
@@ -95,6 +110,8 @@ export default function Task({ navigation }) {
                 <DateTimeInput type={'date'} save={setDate} />
                 <DateTimeInput type={'hour'} save={setHour} />
 
+                {
+                id &&
                 <View style={styles.inLine}>
                     <View style={styles.inputInLine}>
                         <Switch onValueChange={() =>
@@ -107,6 +124,7 @@ export default function Task({ navigation }) {
                         <Text style={styles.removeLabel}>excluir</Text>
                     </TouchableOpacity>
                 </View>
+                }
             </ScrollView>
 
             <Footer icon={'save'} onPress={New}/>
