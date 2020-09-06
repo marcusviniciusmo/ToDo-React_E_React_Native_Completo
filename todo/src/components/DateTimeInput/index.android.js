@@ -8,11 +8,12 @@ import {
 } from 'react-native';
 
 import styles from './styles';
+import { format } from 'date-fns';
 
 import iconCalendar from '../../assets/calendar.png'
 import iconClock from '../../assets/clock.png';
 
-export default function DataTimeInputAndroid({ type }) {
+export default function DataTimeInputAndroid({ type, save }) {
     const [dateTime, setDateTime] = useState();
 
     async function selectDateOrHour() {
@@ -23,6 +24,7 @@ export default function DataTimeInputAndroid({ type }) {
 
             if (action == DatePickerAndroid.dateSetAction)
                 setDateTime(`${day} - ${month} - ${year}`)
+                save(format(new Date(year, month, day), 'yyyy-MM-dd'));
         } else {
             const { action, hour, minute } = await TimePickerAndroid.open({
                 is24Hour: true
@@ -30,6 +32,7 @@ export default function DataTimeInputAndroid({ type }) {
 
             if (action !== TimePickerAndroid.dismissedAction)
                 setDateTime(`${hour}:${minute}`)
+                save(format(new Date(2020, 12, 1, hour, minute, 0, 0), 'HH:mm:ss'));
         }
     }
 
