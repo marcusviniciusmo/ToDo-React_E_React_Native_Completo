@@ -4,14 +4,16 @@ import {
     Image,
     TextInput,
     DatePickerAndroid,
-    TimePickerAndroid
+    TimePickerAndroid,
+    Alert
 } from 'react-native';
 
 import styles from './styles';
-import { format } from 'date-fns';
+import { format, isPast } from 'date-fns';
 
 import iconCalendar from '../../assets/calendar.png'
 import iconClock from '../../assets/clock.png';
+import { da } from 'date-fns/locale';
 
 export default function DataTimeInputAndroid({ type, save, date, hour }) {
     const [dateTime, setDateTime] = useState();
@@ -34,8 +36,12 @@ export default function DataTimeInputAndroid({ type, save, date, hour }) {
             });
 
             if (action == DatePickerAndroid.dateSetAction)
-                setDateTime(`${day} - ${month} - ${year}`)
-                save(format(new Date(year, month, day), 'yyyy-MM-dd'));
+                if(isPast(new Date(year, month, day))){
+                    return Alert.alert('Você não pode escolher uma data passada!')
+                }else{
+                    setDateTime(`${day} - ${month} - ${year}`)
+                    save(format(new Date(year, month, day), 'yyyy-MM-dd'));
+                }
         } else {
             const { action, hour, minute } = await TimePickerAndroid.open({
                 is24Hour: true
