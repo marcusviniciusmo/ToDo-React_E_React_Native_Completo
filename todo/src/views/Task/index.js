@@ -92,6 +92,25 @@ export default function Task({ navigation }) {
         }); 
     }
 
+    async function DeleteTask(){
+        await api.delete(`/task/${id}`)
+            .then(() => {
+                navigation.navigate('Home');
+            });
+    }
+
+    async function Remove(){
+        Alert.alert(
+            'Remover Tarefa',
+            'Deseja realmente remover essa tarefa?',
+            [
+                {text: 'Cancelar'},
+                {text: 'Confirmar', onPress: () => DeleteTask() },
+            ],
+            {cancelable: true}
+        );
+    }
+
     useEffect(() => {
         getMacAddress();
 
@@ -156,7 +175,7 @@ export default function Task({ navigation }) {
                                 thumbColor={done ? '#00761B' : '#EE6B26'} />
                             <Text style={styles.switchLabel}>concluído</Text>
                         </View>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={Remove}>
                             <Text style={styles.removeLabel}>excluir</Text>
                         </TouchableOpacity>
                     </View>
